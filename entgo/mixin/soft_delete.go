@@ -7,6 +7,9 @@ import (
 	"github.com/tx7do/go-crud/entgo/interceptor"
 )
 
+// SoftDelete 只负责软删除标记（deleted_at）与查询过滤拦截器；
+// 删除者字段（deleted_by）由 OperatorID / AuditorID 提供，避免同时
+// 嵌入两者时字段重名导致 codegen 失败。
 var _ ent.Mixin = (*SoftDelete)(nil)
 
 type SoftDelete struct {
@@ -14,10 +17,7 @@ type SoftDelete struct {
 }
 
 func (SoftDelete) Fields() []ent.Field {
-	var fields []ent.Field
-	fields = append(fields, DeletedAt{}.Fields()...)
-	fields = append(fields, DeletedBy{}.Fields()...)
-	return fields
+	return DeletedAt{}.Fields()
 }
 
 func (SoftDelete) Interceptors() []ent.Interceptor {
@@ -35,10 +35,7 @@ type SoftDelete64 struct {
 }
 
 func (SoftDelete64) Fields() []ent.Field {
-	var fields []ent.Field
-	fields = append(fields, DeletedAt{}.Fields()...)
-	fields = append(fields, DeletedBy64{}.Fields()...)
-	return fields
+	return DeletedAt{}.Fields()
 }
 
 func (SoftDelete64) Interceptors() []ent.Interceptor {
